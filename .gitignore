@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+*.log
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+*.onnx
+.DS_Store
