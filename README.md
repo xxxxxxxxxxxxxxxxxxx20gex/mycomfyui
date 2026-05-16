@@ -1,6 +1,6 @@
 # My ComfyUI Nodes and Workflows
 
-This repository stores custom ComfyUI nodes and workflow JSON files.
+自制的一些 ComfyUI 模块和工作流。
 
 ## Structure
 
