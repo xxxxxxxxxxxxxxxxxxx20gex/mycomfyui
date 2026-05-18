@@ -11,6 +11,7 @@ from ..prompts import (
     join_prompt_sections,
 )
 from .common import price_badge, validate_string
+from .options import IMAGE_SIZE_OPTIONS
 
 
 ETHNIC_STYLE_GUARD = "不要生成现代普通服装、朝代官服、泛古装或其他民族服饰。"
@@ -28,7 +29,6 @@ DYNASTY_SCENE_PROMPTS = {
     "古典园林": "融合克制的中式古典园林背景，亭台、廊柱、石阶或竹木元素自然虚化，光线与人物一致，服饰仍为主体。",
     "宫廷氛围": "加入克制的宫廷建筑或室内陈设氛围，背景不要喧宾夺主，人物和服制细节保持清晰。",
 }
-
 
 def _generate_prompt(
     costume_style: str,
@@ -92,6 +92,7 @@ async def _execute_style(
     costume_gender: str,
     scene: str,
     quality: str,
+    size: str,
     person_image: torch.Tensor | None,
     mask: torch.Tensor | None,
     *,
@@ -111,7 +112,7 @@ async def _execute_style(
             scene_prompts=scene_prompts,
             additional_requirements=additional_requirements,
         )
-        response = await generate_image(prompt, quality=quality, node_cls=cls)
+        response = await generate_image(prompt, quality=quality, size=size, node_cls=cls)
     else:
         prompt = _edit_prompt(
             costume_style,
@@ -123,7 +124,7 @@ async def _execute_style(
             additional_requirements=additional_requirements,
         )
         files = image_tensor_to_edit_files(person_image, mask)
-        response = await edit_image(prompt, files, quality=quality, node_cls=cls)
+        response = await edit_image(prompt, files, quality=quality, size=size, node_cls=cls)
     return IO.NodeOutput(await response_to_tensor(response))
 
 
@@ -151,6 +152,12 @@ class EthnicCostumePortraitStyler(IO.ComfyNode):
                     tooltip="选择场景。默认保留用户上传照片的原背景。",
                 ),
                 IO.Combo.Input("quality", default="medium", options=["low", "medium", "high"], tooltip="画面质量。"),
+                IO.Combo.Input(
+                    "size",
+                    default="1024x1536",
+                    options=IMAGE_SIZE_OPTIONS,
+                    tooltip="输出尺寸；小尺寸通常更快，竖图适合人像，横图适合半身或场景。",
+                ),
                 IO.Int.Input(
                     "seed",
                     default=0,
@@ -174,6 +181,7 @@ class EthnicCostumePortraitStyler(IO.ComfyNode):
         costume_gender: str,
         scene: str,
         quality: str = "medium",
+        size: str = "1024x1536",
         seed: int = 0,
         person_image: torch.Tensor | None = None,
         mask: torch.Tensor | None = None,
@@ -184,6 +192,7 @@ class EthnicCostumePortraitStyler(IO.ComfyNode):
             costume_gender,
             scene,
             quality,
+            size,
             person_image,
             mask,
             style_label="Selected ethnicity",
@@ -222,6 +231,12 @@ class DynastyCostumePortraitStyler(IO.ComfyNode):
                     tooltip="选择场景。默认保留用户上传照片的原背景。",
                 ),
                 IO.Combo.Input("quality", default="medium", options=["low", "medium", "high"], tooltip="画面质量。"),
+                IO.Combo.Input(
+                    "size",
+                    default="1024x1536",
+                    options=IMAGE_SIZE_OPTIONS,
+                    tooltip="输出尺寸；小尺寸通常更快，竖图适合人像，横图适合半身或场景。",
+                ),
                 IO.Int.Input(
                     "seed",
                     default=0,
@@ -245,6 +260,7 @@ class DynastyCostumePortraitStyler(IO.ComfyNode):
         costume_gender: str,
         scene: str,
         quality: str = "medium",
+        size: str = "1024x1536",
         seed: int = 0,
         person_image: torch.Tensor | None = None,
         mask: torch.Tensor | None = None,
@@ -255,6 +271,7 @@ class DynastyCostumePortraitStyler(IO.ComfyNode):
             costume_gender,
             scene,
             quality,
+            size,
             person_image,
             mask,
             style_label="Selected dynasty clothing",

@@ -3,6 +3,7 @@ from comfy_api.latest import IO
 
 from ..api import edit_image, image_tensor_to_edit_files, response_to_tensor
 from .common import price_badge, validate_string
+from .options import IMAGE_SIZE_OPTIONS
 
 
 class PromptImageEdit(IO.ComfyNode):
@@ -26,7 +27,7 @@ class PromptImageEdit(IO.ComfyNode):
                 IO.Combo.Input(
                     "size",
                     default="1024x1536",
-                    options=["auto", "1024x1024", "1024x1536", "1536x1024"],
+                    options=IMAGE_SIZE_OPTIONS,
                     tooltip="输出尺寸。",
                 ),
                 IO.Combo.Input(
