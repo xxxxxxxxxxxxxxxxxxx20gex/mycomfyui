@@ -93,6 +93,7 @@ async def _execute_style(
     scene: str,
     quality: str,
     size: str,
+    image_count: int,
     person_image: torch.Tensor | None,
     mask: torch.Tensor | None,
     *,
@@ -112,7 +113,7 @@ async def _execute_style(
             scene_prompts=scene_prompts,
             additional_requirements=additional_requirements,
         )
-        response = await generate_image(prompt, quality=quality, size=size, node_cls=cls)
+        response = await generate_image(prompt, quality=quality, size=size, n=image_count, node_cls=cls)
     else:
         prompt = _edit_prompt(
             costume_style,
@@ -124,7 +125,7 @@ async def _execute_style(
             additional_requirements=additional_requirements,
         )
         files = image_tensor_to_edit_files(person_image, mask)
-        response = await edit_image(prompt, files, quality=quality, size=size, node_cls=cls)
+        response = await edit_image(prompt, files, quality=quality, size=size, n=image_count, node_cls=cls)
     return IO.NodeOutput(await response_to_tensor(response))
 
 
@@ -159,6 +160,15 @@ class EthnicCostumePortraitStyler(IO.ComfyNode):
                     tooltip="输出尺寸；小尺寸通常更快，竖图适合人像，横图适合半身或场景。",
                 ),
                 IO.Int.Input(
+                    "image_count",
+                    default=4,
+                    min=1,
+                    max=8,
+                    step=1,
+                    display_mode=IO.NumberDisplay.number,
+                    tooltip="一次输出的图片数量。",
+                ),
+                IO.Int.Input(
                     "seed",
                     default=0,
                     min=0,
@@ -182,6 +192,7 @@ class EthnicCostumePortraitStyler(IO.ComfyNode):
         scene: str,
         quality: str = "medium",
         size: str = "1024x1536",
+        image_count: int = 4,
         seed: int = 0,
         person_image: torch.Tensor | None = None,
         mask: torch.Tensor | None = None,
@@ -193,6 +204,7 @@ class EthnicCostumePortraitStyler(IO.ComfyNode):
             scene,
             quality,
             size,
+            image_count,
             person_image,
             mask,
             style_label="Selected ethnicity",
@@ -238,6 +250,15 @@ class DynastyCostumePortraitStyler(IO.ComfyNode):
                     tooltip="输出尺寸；小尺寸通常更快，竖图适合人像，横图适合半身或场景。",
                 ),
                 IO.Int.Input(
+                    "image_count",
+                    default=4,
+                    min=1,
+                    max=8,
+                    step=1,
+                    display_mode=IO.NumberDisplay.number,
+                    tooltip="一次输出的图片数量。",
+                ),
+                IO.Int.Input(
                     "seed",
                     default=0,
                     min=0,
@@ -261,6 +282,7 @@ class DynastyCostumePortraitStyler(IO.ComfyNode):
         scene: str,
         quality: str = "medium",
         size: str = "1024x1536",
+        image_count: int = 4,
         seed: int = 0,
         person_image: torch.Tensor | None = None,
         mask: torch.Tensor | None = None,
@@ -272,6 +294,7 @@ class DynastyCostumePortraitStyler(IO.ComfyNode):
             scene,
             quality,
             size,
+            image_count,
             person_image,
             mask,
             style_label="Selected dynasty clothing",

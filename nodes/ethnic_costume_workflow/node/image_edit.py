@@ -37,6 +37,15 @@ class PromptImageEdit(IO.ComfyNode):
                     tooltip="背景模式；当前图像模型不支持透明背景。",
                 ),
                 IO.Int.Input(
+                    "image_count",
+                    default=4,
+                    min=1,
+                    max=8,
+                    step=1,
+                    display_mode=IO.NumberDisplay.number,
+                    tooltip="一次输出的图片数量。",
+                ),
+                IO.Int.Input(
                     "seed",
                     default=0,
                     min=0,
@@ -60,6 +69,7 @@ class PromptImageEdit(IO.ComfyNode):
         quality: str = "medium",
         size: str = "1024x1536",
         background: str = "opaque",
+        image_count: int = 4,
         seed: int = 0,
         mask: torch.Tensor | None = None,
     ) -> IO.NodeOutput:
@@ -71,6 +81,7 @@ class PromptImageEdit(IO.ComfyNode):
             quality=quality,
             size=size,
             background=background,
+            n=image_count,
             node_cls=cls,
         )
         return IO.NodeOutput(await response_to_tensor(response))
