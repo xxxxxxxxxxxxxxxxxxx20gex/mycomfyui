@@ -3,7 +3,7 @@ from comfy_api.latest import IO
 
 from ..api import edit_image, image_tensor_to_edit_files, response_to_tensor
 from .common import price_badge, validate_string
-from .options import IMAGE_SIZE_OPTIONS
+from .options import IMAGE_SIZE_OPTIONS, normalize_image_size
 
 
 class PromptImageEdit(IO.ComfyNode):
@@ -64,6 +64,7 @@ class PromptImageEdit(IO.ComfyNode):
         mask: torch.Tensor | None = None,
     ) -> IO.NodeOutput:
         validate_string(prompt, strip_whitespace=True)
+        size = normalize_image_size(size)
         files = image_tensor_to_edit_files(image, mask)
         response = await edit_image(
             prompt.strip(),

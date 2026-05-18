@@ -11,7 +11,7 @@ from ..prompts import (
     join_prompt_sections,
 )
 from .common import price_badge, validate_string
-from .options import IMAGE_SIZE_OPTIONS
+from .options import IMAGE_SIZE_OPTIONS, normalize_image_size
 
 
 ETHNIC_STYLE_GUARD = "不要生成现代普通服装、朝代官服、泛古装或其他民族服饰。"
@@ -102,6 +102,7 @@ async def _execute_style(
     additional_requirements: str,
 ) -> IO.NodeOutput:
     validate_string(costume_style, strip_whitespace=True)
+    size = normalize_image_size(size)
     if person_image is None:
         prompt = _generate_prompt(
             costume_style,
