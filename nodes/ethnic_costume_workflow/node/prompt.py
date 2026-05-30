@@ -18,7 +18,7 @@ class PromptOptimizer(IO.ComfyNode):
         return IO.Schema(
             node_id="PromptOptimizer",
             display_name="提示词优化",
-            category="民族服饰/文本工具",
+            category="服饰/文本工具",
             description="输入一段提示词，输出优化后的提示词。",
             inputs=[
                 IO.String.Input(

@@ -12,7 +12,7 @@ class PromptImageEdit(IO.ComfyNode):
         return IO.Schema(
             node_id="PromptImageEdit",
             display_name="提示词图像编辑",
-            category="民族服饰/图像工具",
+            category="服饰/图像工具",
             description="输入图片和提示词，调用图像编辑接口生成修改后的图片。",
             inputs=[
                 IO.Image.Input("image", tooltip="需要编辑的图片。"),
