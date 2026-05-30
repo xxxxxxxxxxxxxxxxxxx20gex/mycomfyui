@@ -18,6 +18,6 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "PromptImageEdit": "提示词图像编辑",
     "PromptOptimizer": "提示词优化",
     "EthnicCostumePortraitStyler": "民族华服映像",
-    "KidsCartoonCowboyStyler": "儿童动漫牛仔换装",
+    "KidsCartoonCowboyStyler": "儿童动漫角色换装",
     "DynastyCostumePortraitStyler": "历代衣冠映像",
 }

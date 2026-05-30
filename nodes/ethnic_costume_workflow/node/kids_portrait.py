@@ -21,13 +21,45 @@ CARTOON_COWBOY_STYLE_PROMPTS = {
         "western cowboy costume with distinctive black-and-white cow-print vest and leg accents, yellow plaid shirt, "
         "blue denim, brown leather hat and boots, red bandana, toy-like animated character costume, playful and wholesome"
     ),
+    "光之英雄套装": (
+        "original child-friendly light hero costume, silver and red streamlined bodysuit, glowing chest emblem, "
+        "smooth helmet-inspired hood without copying any existing hero, soft armor panels, heroic pose, bright 3D animated styling"
+    ),
+    "热血忍者套装": (
+        "original child-friendly energetic ninja adventure outfit, orange and navy training jacket, soft fabric headband, "
+        "utility pouch, wrapped wrist guards, sporty sneakers, dynamic anime-inspired styling without copying any existing character"
+    ),
+    "机甲战士套装": (
+        "original child-friendly mecha pilot costume, lightweight blue and white armor plates, glowing safe toy-like chest core, "
+        "rounded shoulder guards, tech boots, futuristic animated hero styling, no weapon"
+    ),
+    "魔法冒险套装": (
+        "original child-friendly magical adventure outfit, star-pattern cape, bright tunic, soft hat or hair accessory, "
+        "gem-like decorative brooch, colorful boots, whimsical 3D animated fantasy styling, no scary elements"
+    ),
+    "太空小英雄套装": (
+        "original child-friendly space explorer hero outfit, white and sky-blue astronaut suit, rounded helmet collar, "
+        "planet badge, soft gloves and boots, polished toy-like sci-fi animation styling"
+    ),
+    "恐龙探险套装": (
+        "original child-friendly dinosaur explorer outfit, green adventure vest, playful dinosaur-scale hoodie, cargo shorts or pants, "
+        "soft boots, explorer badge, cute prehistoric theme, bright animated styling"
+    ),
+    "国风小侠客套装": (
+        "original child-friendly Chinese fantasy young hero outfit, neat short robe with modern-safe tailoring, cloud pattern trim, "
+        "soft waist sash, fabric wrist guards, playful animated wuxia-inspired styling, no weapon"
+    ),
+    "海洋冒险套装": (
+        "original child-friendly ocean adventure outfit, blue sailor-inspired jacket, wave pattern accents, shell badge, "
+        "soft boots, cheerful aquatic color palette, polished animated character styling"
+    ),
 }
 CARTOON_COWBOY_SCENE_PROMPTS = {
-    "保留原背景": "保留上传照片的原背景、光线、镜头视角和构图，只替换为儿童友好的动漫牛仔服饰。",
+    "保留原背景": "保留上传照片的原背景、光线、镜头视角和构图，只替换为儿童友好的动漫角色服饰。",
     "玩具房间": "柔和明亮的儿童玩具房间背景，色彩温暖，背景不要喧宾夺主，主体和服饰清晰。",
     "动画舞台": "明亮的卡通动画舞台背景，轻松欢乐，有柔和聚光灯和简洁装饰，适合儿童主题展示。",
     "西部小镇": "儿童友好的卡通西部小镇背景，木质街道、蓝天白云和温暖阳光，氛围活泼但不写实暴力。",
-    "纯色背景": "简洁纯色背景，突出儿童友好的动漫牛仔服饰结构和色彩。",
+    "纯色背景": "简洁纯色背景，突出儿童友好的动漫角色服饰结构和色彩。",
 }
 CARTOON_COWBOY_REQUIREMENTS = (
     "3D animated toy-like character style, cheerful, wholesome, child-safe, colorful, polished, "
@@ -39,8 +71,8 @@ CARTOON_COWBOY_REQUIREMENTS = (
 def _cartoon_cowboy_generate_prompt(cowboy_style: str, character_direction: str, scene: str) -> str:
     return join_prompt_sections(
         [
-            ("Task", "Create a cheerful child-friendly 3D animated character wearing a western cowboy costume."),
-            ("Style direction", "Inspired by classic playful toy animation aesthetics, but create an original character."),
+            ("Task", "Create a cheerful child-friendly 3D animated character wearing the selected cartoon costume."),
+            ("Style direction", "Inspired by broad playful toy animation and anime aesthetics, but create an original character."),
             ("Character direction", character_direction),
             ("Target outfit", CARTOON_COWBOY_STYLE_PROMPTS[cowboy_style]),
             ("Scene", CARTOON_COWBOY_SCENE_PROMPTS.get(scene, CARTOON_COWBOY_SCENE_PROMPTS["玩具房间"])),
@@ -54,7 +86,7 @@ def _cartoon_cowboy_edit_prompt(cowboy_style: str, character_direction: str, sce
     return join_prompt_sections(
         [
             ("Task", "Perform a clothing replacement edit on the uploaded child or person photo."),
-            ("Style direction", "Transform the outfit into an original child-friendly 3D animated western cowboy costume."),
+            ("Style direction", "Transform the outfit into an original child-friendly 3D animated cartoon costume."),
             ("Character direction", character_direction),
             ("Target outfit", CARTOON_COWBOY_STYLE_PROMPTS[cowboy_style]),
             (
@@ -75,13 +107,13 @@ class KidsCartoonCowboyStyler(IO.ComfyNode):
     def define_schema(cls):
         return IO.Schema(
             node_id="KidsCartoonCowboyStyler",
-            display_name="儿童动漫牛仔换装",
+            display_name="儿童动漫角色换装",
             category="服饰/儿童换装",
-            description="上传儿童或人物照片，自动换成儿童友好的 3D 动漫牛仔服饰；不上传则直接生成动漫牛仔角色。",
+            description="上传儿童或人物照片，自动换成儿童友好的 3D 动漫角色服饰；不上传则直接生成动漫角色。",
             inputs=[
                 IO.Image.Input(
                     "person_image",
-                    tooltip="可选人物照片：上传后进行牛仔换装；不上传则自动生成儿童友好的动漫牛仔角色。",
+                    tooltip="可选人物照片：上传后进行动漫角色换装；不上传则自动生成儿童友好的动漫角色。",
                     optional=True,
                 ),
                 IO.Mask.Input("mask", tooltip="可选遮罩；普通上传照片无需遮罩。", optional=True),
@@ -89,7 +121,7 @@ class KidsCartoonCowboyStyler(IO.ComfyNode):
                     "cowboy_style",
                     default="经典牛仔男孩",
                     options=list(CARTOON_COWBOY_STYLE_PROMPTS.keys()),
-                    tooltip="选择儿童动漫牛仔服饰方向。",
+                    tooltip="选择儿童动漫服饰方向；包含原创光之英雄、热血忍者、机甲、魔法、太空等题材。",
                 ),
                 IO.Combo.Input(
                     "character_direction",
